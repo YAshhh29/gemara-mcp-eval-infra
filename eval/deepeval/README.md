@@ -1,6 +1,8 @@
 # DeepEval Evaluation
 
-MCP tool selection accuracy and N-run determinism measurement using DeepEval.
+N-run output determinism for `validate_gemara_artifact`. For each of the nine
+tool scenarios in `corpus/scenarios.yaml` (tc-001 to tc-009), the test calls the
+tool 20 times with the same artifact and fails if any response differs.
 
 ## Setup
 
@@ -12,7 +14,7 @@ pip install -r requirements.txt
 
 ```bash
 # From this directory
-python -m pytest test_tool_selection.py test_determinism.py -v
+python -m pytest test_output_determinism.py -v
 
 # Or from repo root
 make eval-deepeval
@@ -20,9 +22,9 @@ make eval-deepeval
 
 ## Server Connection
 
-Tests connect to a live gemara-mcp server via MCP stdio transport using a
-session-scoped pytest fixture (`mcp_client` in `conftest.py`). The fixture
-spawns a Docker container and keeps the connection open for the test session.
+The test connects to a live gemara-mcp server via MCP stdio transport using
+`GemaraMCPClient` from `eval/shared/mcp_client.py`. It spawns one Docker
+container and keeps the connection open for all scenarios.
 
 Configure via environment variables:
 
@@ -32,13 +34,11 @@ Configure via environment variables:
 ## Dependencies
 
 - **Docker**: Required for MCP server connection
-- **Ollama** with `qwen2.5:7b`: Required for GEval LLM-as-judge scoring
 
-The MCP calls work independently of Ollama. If Ollama is unavailable, tool
-calls succeed but GEval scoring (threat/control consistency tests) will fail.
+No LLM is involved: the test compares raw tool output, so it needs no Ollama
+and no GEval scoring.
 
 ## Test files
 
-- `test_tool_selection.py` — Criterion 1: Are the right tools called for the right task?
-- `test_determinism.py` — Criterion 3: Are results deterministic across runs?
-- `conftest.py` — Shared fixtures: corpus loading and MCP client session
+- `test_output_determinism.py` — Are `validate_gemara_artifact` results identical across runs?
+- `conftest.py` — Shared fixtures: corpus loading

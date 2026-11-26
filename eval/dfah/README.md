@@ -58,6 +58,6 @@ from gemara-mcp to skills in gemaraproj/gemara-ai.
 ## Key Metrics
 
 - **Trajectory Determinism**: Do the same MCP tools get called in the same order?
-- **Output Determinism**: Are the same controls/threats suggested? (Jaccard similarity)
+- **Output Determinism**: Does `validate_gemara_artifact` return the same result for the same artifact on every run? (exact match)
 - **Evidence-Conditioned Faithfulness**: Are outputs grounded in provided evidence?
 - **Determinism-Faithfulness Correlation**: Does determinism correlate with faithfulness? (DFAH's key finding: r=0.45)
